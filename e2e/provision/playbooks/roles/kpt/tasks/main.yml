@@ -80,7 +80,7 @@
   ansible.builtin.debug:
     var: kpt_live_init
 
-- name: Apply package {{ pkg }}
+- name: "Apply package: {{ pkg }}"
   kpt:
     pkg_path: "{{ workdir }}"
     version: "{{ version }}"
