@@ -25,5 +25,9 @@ for cluster in $(kubectl get cluster -o jsonpath='{range .items[*]}{.metadata.na
     _kubeconfig=$(k8s_get_capi_kubeconfig "$kubeconfig" "default" "$cluster")
     workers+=$(kubectl get nodes -l node-role.kubernetes.io/control-plane!= -o jsonpath='{range .items[*]}"{.metadata.name}",{"\n"}{end}' --kubeconfig "$_kubeconfig")
 done
+if [ -z "${workers}" ]; then
+    echo "no workers found  in $0"
+    exit 1
+fi
 echo "{\"workers\":[${workers::-1}]}" | tee /tmp/vars.json
 sudo containerlab deploy --topo "$TESTDIR/002-topo.gotmpl" --vars /tmp/vars.json
