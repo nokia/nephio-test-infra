@@ -47,6 +47,11 @@
   when: not 'kind' in bootstrap_kind_get_cluster.stdout
   changed_when: true
 
+- name: Update /tmp/kubeconfig
+  become: true
+  ansible.builtin.command: kind export kubeconfig --kubeconfig /tmp/kubeconfig 
+  when: 'kind' in bootstrap_kind_get_cluster.stdout
+  
 - name: Create .kube directory
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.kube"
