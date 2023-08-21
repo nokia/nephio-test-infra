@@ -16,10 +16,6 @@ all:
     validate_certs: true
     container_engine: podman
     installation_mode: online #online/offline
-    proxy:
-      http_proxy: 
-      https_proxy:
-      no_proxy:
     host_os: "linux"  # use "darwin" for MacOS X, "windows" for Windows
     host_arch: "amd64"  # other possible values: "386","arm64","arm","ppc64le","s390x"
     host_min_vcpu: 8 # minimum required vCPUs before install
