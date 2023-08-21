@@ -77,7 +77,7 @@
   register: kpt_live_init
   when: not kpt_resourcegroup.stat.exists
 
-- name: "Print '{{kpt}}' package initialization"
+- name: "Print '{{pkg}}' package initialization"
   ansible.builtin.debug:
     var: kpt_live_init
 
