@@ -38,7 +38,8 @@
         - name: Add registry mirrors to docker configuration
           ansible.builtin.set_fact:
             docker_engine_daemon_json: 
-              registry-mirrors: "{{ docker_registry_mirrors | default(omit) }}"
+              registry-mirrors: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
+          when: lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS')
 
         - name: Install docker binaries
           ansible.builtin.include_role:
