@@ -22,10 +22,6 @@
       HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}"
       no_proxy:    "{{ lookup('ansible.builtin.env', 'no_proxy') }}"
       NO_PROXY:    "{{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
-    docker_registry_mirrors: [
-      "https://docker-registry-remote.artifactory-espoo1.int.net.nokia.com",
-      "https://docker-registry-remote.artifactory-espoo2.int.net.nokia.com"
-    ]
   pre_tasks:
     - name: Install kubernetes python package
       become: true
