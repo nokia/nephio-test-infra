@@ -58,7 +58,7 @@
         no_proxy: "{{ lookup('ansible.builtin.env', 'no_proxy', default=lookup('ansible.builtin.env', 'NO_PROXY', default='127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254' ) )  }}"
 
     - name: Update porch-server
-      ansible.builtin.command: |
+      ansible.builtin.shell: |
         kubectl set env -n porch-system deployment/porch-server \
         http_proxy={{ lookup('ansible.builtin.env', 'http_proxy') }} \
         https_proxy={{ lookup('ansible.builtin.env', 'https_proxy') }} \
