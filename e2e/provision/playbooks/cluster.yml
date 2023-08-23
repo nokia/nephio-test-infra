@@ -24,29 +24,13 @@
       NO_PROXY:    "{{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
   pre_tasks:
     - name: "Print environment variable-based configuration"
-      become: yes
+      become: true
       ansible.builtin.debug:
         msg: |
           http proxy env: {{ lookup('ansible.builtin.env', 'http_proxy') }}, {{ lookup('ansible.builtin.env', 'https_proxy') }}, {{ lookup('ansible.builtin.env', 'no_proxy') }}
           HTTP PROXY env: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}, {{ lookup('ansible.builtin.env', 'NO_PROXY') }}
           ---     
           docker registry mirrors: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}
-          ---
-          kind: Cluster
-          apiVersion: kind.x-k8s.io/v1alpha4
-          nodes:
-            - role: control-plane
-              image: kindest/node:{{ k8s.version }}
-              extraMounts:
-                - hostPath: /var/run/{{ container_engine }}.sock
-                  containerPath: /var/run/{{ container_engine }}.sock
-          {% if lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS')  %}
-          containerdConfigPatches:
-            - |-
-              [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
-                endpoint = {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') | from_json }}              
-          {% endif %}
-          ---
 
     - name: Install kubernetes python package
       become: true

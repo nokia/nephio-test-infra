@@ -50,6 +50,23 @@
     metallb_namespaces: "{{ metallb.enabled | ternary(metallb.k8s.namespaces, []) }}"
     cluster_api_namespaces: "{{ cluster_api.enabled | ternary(cluster_api.k8s.namespaces, []) }}"
 
+- name: Add http proxy environment variables to key pods
+  when: lookup('ansible.builtin.env', 'http_proxy') or lookup('ansible.builtin.env', 'https_proxy') or lookup('ansible.builtin.env', 'HTTP_PROXY') or lookup('ansible.builtin.env', 'HTTPS_PROXY')
+  block:
+    - name: Calculate no_proxy
+      ansible.builtin.set_fact:
+        no_proxy: "{{ lookup('ansible.builtin.env', 'no_proxy', default=lookup('ansible.builtin.env', 'NO_PROXY', default='127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254' ) )  }}"
+
+    - name: Update porch-server
+      ansible.builtin.command: |
+        kubectl set env -n porch-system deployment/porch-server \
+        http_proxy={{ lookup('ansible.builtin.env', 'http_proxy' }} \
+        https_proxy={{ lookup('ansible.builtin.env', 'https_proxy' }} \
+        HTTP_PROXY={{ lookup('ansible.builtin.env', 'HTTP_PROXY' }} \
+        HTTPS_PROXY={{ lookup('ansible.builtin.env', 'HTTPS_PROXY' }} \
+        no_proxy="{{ no_proxy }},$(kubectl get svc kubernetes -n default -o jsonpath={.spec.clusterIP})" \
+        NO_PROXY="{{ no_proxy }},$(kubectl get svc kubernetes -n default -o jsonpath={.spec.clusterIP})"
+
 - name: Wait for deployments
   ansible.builtin.include_tasks: wait-deployments.yml
   loop: "{{ cert_manager_namespaces + gitea_namespaces + resource_backend_namespaces + metallb_namespaces + cluster_api_namespaces }}"
