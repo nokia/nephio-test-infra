@@ -60,10 +60,10 @@
     - name: Update porch-server
       ansible.builtin.command: |
         kubectl set env -n porch-system deployment/porch-server \
-        http_proxy={{ lookup('ansible.builtin.env', 'http_proxy' }} \
-        https_proxy={{ lookup('ansible.builtin.env', 'https_proxy' }} \
-        HTTP_PROXY={{ lookup('ansible.builtin.env', 'HTTP_PROXY' }} \
-        HTTPS_PROXY={{ lookup('ansible.builtin.env', 'HTTPS_PROXY' }} \
+        http_proxy={{ lookup('ansible.builtin.env', 'http_proxy') }} \
+        https_proxy={{ lookup('ansible.builtin.env', 'https_proxy') }} \
+        HTTP_PROXY={{ lookup('ansible.builtin.env', 'HTTP_PROXY') }} \
+        HTTPS_PROXY={{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }} \
         no_proxy="{{ no_proxy }},$(kubectl get svc kubernetes -n default -o jsonpath={.spec.clusterIP})" \
         NO_PROXY="{{ no_proxy }},$(kubectl get svc kubernetes -n default -o jsonpath={.spec.clusterIP})"
 
