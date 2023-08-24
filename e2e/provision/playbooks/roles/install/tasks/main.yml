@@ -41,9 +41,13 @@
       ansible.builtin.command: kubectl get svc kubernetes -n default -o jsonpath={.spec.clusterIP}
       register: k8s_api_ip
 
+    - name: Get gitea IP
+      ansible.builtin.command: kubectl get svc -n gitea gitea -o jsonpath={.status.loadBalancer.ingress[].ip}
+      register: gitea_ip
+
     - name: Calculate no_proxy
       ansible.builtin.set_fact:
-        no_proxy: "{{ lookup('ansible.builtin.env', 'no_proxy', default=lookup('ansible.builtin.env', 'NO_PROXY', default='127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254' ) )  }},{{k8s_api_ip.stdout}}"
+        no_proxy: "{{ lookup('ansible.builtin.env', 'no_proxy', default=lookup('ansible.builtin.env', 'NO_PROXY', default='127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254' ) )  }},{{k8s_api_ip.stdout}},{{gitea_ip.stdout}}"
 
     - name: Update porch-server
       ansible.builtin.shell: |
