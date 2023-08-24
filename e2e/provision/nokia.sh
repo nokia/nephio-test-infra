@@ -21,9 +21,9 @@ if [ -n "$http_proxy" -o -n "$https_proxy" ]; then
 
     # replace proxy envvars in /etc/environment
     cat << THEEND | sudo tee -a  /etc/environment > /dev/null
-    http_proxy="$http_proxy"
-    https_proxy="$https_proxy"
-    no_proxy="$no_proxy"
+http_proxy="$http_proxy"
+https_proxy="$https_proxy"
+no_proxy="$no_proxy"
 THEEND
 fi
 
@@ -35,9 +35,9 @@ if [ -n "$HTTP_PROXY" -o -n "$HTTPS_PROXY" ]; then
 
     # replace proxy envvars in /etc/environment
     cat << THEEND2 | sudo tee -a  /etc/environment > /dev/null
-    HTTP_PROXY="$HTTP_PROXY"
-    HTTPS_PROXY="$HTTPS_PROXY"
-    NO_PROXY="$NO_PROXY"
+HTTP_PROXY="$HTTP_PROXY"
+HTTPS_PROXY="$HTTPS_PROXY"
+NO_PROXY="$NO_PROXY"
 THEEND2
 fi
 
