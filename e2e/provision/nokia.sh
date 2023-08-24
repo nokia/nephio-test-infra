@@ -3,7 +3,7 @@ self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )"
 
 echo "Checking HTTP proxy setup..."
 
-# Make sure that proxy env vars are inherited by sudo sessions
+# Make sure that http proxy env vars are inherited by sudo sessions
 echo 'Defaults    env_keep += " http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY "' | sudo tee /etc/sudoers.d/proxy  > /dev/null
 sudo chown root:root /etc/sudoers.d/proxy
 sudo chmod go-rwx /etc/sudoers.d/proxy
@@ -24,7 +24,7 @@ if [ -n "$http_proxy" -o -n "$https_proxy" ]; then
     http_proxy="$http_proxy"
     https_proxy="$https_proxy"
     no_proxy="$no_proxy"
-THEEND    
+THEEND
 fi
 
 # sensible defaults for *_PROXY
@@ -34,11 +34,11 @@ if [ -n "$HTTP_PROXY" -o -n "$HTTPS_PROXY" ]; then
     export NO_PROXY="${NO_PROXY:-127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254}"
 
     # replace proxy envvars in /etc/environment
-    cat << THEEND | sudo tee -a  /etc/environment > /dev/null
+    cat << THEEND2 | sudo tee -a  /etc/environment > /dev/null
     HTTP_PROXY="$HTTP_PROXY"
     HTTPS_PROXY="$HTTPS_PROXY"
     NO_PROXY="$NO_PROXY"
-THEEND
+THEEND2
 fi
 
 echo "Dwonloading and starting the init script..."
