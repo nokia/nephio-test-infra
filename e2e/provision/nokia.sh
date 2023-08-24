@@ -4,9 +4,14 @@ self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd )"
 echo "Checking HTTP proxy setup..."
 
 # Make sure that http proxy env vars are inherited by sudo sessions
-echo 'Defaults    env_keep += " http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY "' | sudo tee /etc/sudoers.d/proxy  > /dev/null
-sudo chown root:root /etc/sudoers.d/proxy
-sudo chmod go-rwx /etc/sudoers.d/proxy
+cat << THEEND3 | sudo tee /etc/sudoers.d/nephio  > /dev/null
+Defaults    env_keep += " http_proxy https_proxy no_proxy HTTP_PROXY HTTPS_PROXY NO_PROXY "
+${NEPHIO_USER:-${USER:-ubuntu}} ALL=(ALL) NOPASSWD:ALL 
+THEEND3
+sudo chown root:root /etc/sudoers.d/nephio
+sudo chmod go-rwx /etc/sudoers.d/nephio
+
+
 
 # replace proxy envvars in /etc/environment  (required, because ansible uses /bin/sh and not bash)
 if [ -f /etc/environment ]; then
@@ -41,7 +46,7 @@ NO_PROXY="$NO_PROXY"
 THEEND2
 fi
 
-echo "Dwonloading and starting the init script..."
+echo "Downloading and starting the init script..."
 
 curl https://raw.githubusercontent.com/nokia/nephio-test-infra/nokia-intranet/e2e/provision/init.sh |  \
 sudo \
