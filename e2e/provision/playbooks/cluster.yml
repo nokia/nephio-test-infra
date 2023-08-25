@@ -26,11 +26,10 @@
     - name: "Print environment variable-based configuration"
       become: true
       ansible.builtin.debug:
-        msg: |
-          http proxy env: {{ lookup('ansible.builtin.env', 'http_proxy') }}, {{ lookup('ansible.builtin.env', 'https_proxy') }}, {{ lookup('ansible.builtin.env', 'no_proxy') }}
-          HTTP PROXY env: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}, {{ lookup('ansible.builtin.env', 'NO_PROXY') }}
-          ---     
-          docker registry mirrors: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}
+        msg: 
+          - "http proxy env: {{ lookup('ansible.builtin.env', 'http_proxy') }}, {{ lookup('ansible.builtin.env', 'https_proxy') }}, {{ lookup('ansible.builtin.env', 'no_proxy') }}"
+          - "HTTP PROXY env: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}, {{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
+          - "docker registry mirrors: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
 
     - name: Install kubernetes python package
       become: true

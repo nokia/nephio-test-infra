@@ -42,8 +42,11 @@
       register: k8s_api_ip
 
     - name: Get gitea IP
-      ansible.builtin.command: kubectl get svc -n gitea gitea -o jsonpath={.status.loadBalancer.ingress[].ip}
+      ansible.builtin.command: kubectl get svc -n gitea gitea -o jsonpath='{.status.loadBalancer.ingress[].ip}'
       register: gitea_ip
+      until: gitea_ip.stdout
+      retries: 100
+      delay: 10      
 
     - name: Calculate no_proxy
       ansible.builtin.set_fact:
