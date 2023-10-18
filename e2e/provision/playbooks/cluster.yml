@@ -163,5 +163,6 @@
           status: true
       loop:
         - nephio-example-packages
+        - free5gc-packages
         - mgmt
         - mgmt-staging
