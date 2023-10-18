@@ -34,6 +34,35 @@
   retries: 60
   delay: 5
 
+- name: Add HTTP proxy environment variables to key pods
+  when: lookup('ansible.builtin.env', 'http_proxy') or lookup('ansible.builtin.env', 'https_proxy') or lookup('ansible.builtin.env', 'HTTP_PROXY') or lookup('ansible.builtin.env', 'HTTPS_PROXY')
+  block:
+    - name: Get Kubernetes API IP
+      ansible.builtin.command: kubectl get svc kubernetes -n default -o jsonpath={.spec.clusterIP}
+      register: k8s_api_ip
+
+    - name: Get gitea IP
+      ansible.builtin.command: kubectl get svc -n gitea gitea -o jsonpath='{.status.loadBalancer.ingress[].ip}'
+      register: gitea_ip
+      until: gitea_ip.stdout
+      retries: 100
+      delay: 10      
+
+    - name: Calculate no_proxy
+      ansible.builtin.set_fact:
+        no_proxy: "{{ lookup('ansible.builtin.env', 'no_proxy', default=lookup('ansible.builtin.env', 'NO_PROXY', default='127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254' ) )  }},{{k8s_api_ip.stdout}},{{gitea_ip.stdout}}"
+
+    - name: Update porch-server
+      ansible.builtin.shell: |
+        kubectl set env -n porch-system deployment/porch-server \
+        http_proxy={{ lookup('ansible.builtin.env', 'http_proxy') }} \
+        https_proxy={{ lookup('ansible.builtin.env', 'https_proxy') }} \
+        HTTP_PROXY={{ lookup('ansible.builtin.env', 'HTTP_PROXY') }} \
+        HTTPS_PROXY={{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }} \
+        no_proxy="{{ no_proxy }}" \
+        NO_PROXY="{{ no_proxy }}"
+
+
 - name: Wait for deployments
   ansible.builtin.include_tasks: wait_deployments.yml
   loop: "{{ nephio.k8s.namespaces }}"

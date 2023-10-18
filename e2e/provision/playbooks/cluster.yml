@@ -15,7 +15,22 @@
     clab:
       version: 0.42.0
       download_url: "https://github.com/srl-labs/containerlab/releases/download"
+    docker_engine_init_exports:
+      http_proxy:  "{{ lookup('ansible.builtin.env', 'http_proxy') }}"
+      HTTP_PROXY:  "{{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}"
+      https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') }}"
+      HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}"
+      no_proxy:    "{{ lookup('ansible.builtin.env', 'no_proxy') }}"
+      NO_PROXY:    "{{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
   pre_tasks:
+    - name: "Print environment variable-based configuration"
+      become: true
+      ansible.builtin.debug:
+        msg: 
+          - "http proxy env: {{ lookup('ansible.builtin.env', 'http_proxy') }}, {{ lookup('ansible.builtin.env', 'https_proxy') }}, {{ lookup('ansible.builtin.env', 'no_proxy') }}"
+          - "HTTP PROXY env: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}, {{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
+          - "docker registry mirrors: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
+
     - name: Install kubernetes python package
       become: true
       ansible.builtin.pip:
