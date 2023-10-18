@@ -49,11 +49,6 @@ nephio:
         version: "{{ nephio_pkg_version }}"
         async: 480
         poll: 0
-      - repo_uri: https://github.com/nephio-project/nephio-example-packages.git
-        pkg: nephio-stock-repos
-        version: "{{ nephio_pkg_version }}"
-        async: 60
-        poll: 0
 
 nephio_webui:
   k8s:
