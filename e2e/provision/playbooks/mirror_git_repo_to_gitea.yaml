@@ -1,4 +1,4 @@
-- name: Create gitea repo
+- name: "Create gitea repo: {{ item.name }}"
   kubernetes.core.k8s:
     context: kind-kind
     state: present
@@ -18,7 +18,7 @@
     dest: "/tmp/repository/{{ item.name }}.git"
     bare: yes
 
-- name: "Add gitea remote "
+- name: "Add gitea remote to local git repo"
   ansible.builtin.shell: |
     cd /tmp/repository/{{ item.name }}.git ; git remote add gitea http://nephio:secret@172.18.0.200:3000/nephio/{{ item.name }}.git
 
@@ -34,7 +34,7 @@
   ansible.builtin.shell: |
     cd /tmp/repository/{{ item.name }}.git ; no_proxy="$no_proxy,172.18.0.200" NO_PROXY="$NO_PROXY,172.18.0.200"  git push gitea --all --force
 
-- name: Create porch repository object
+- name: "Create porch repository object: {{ item.name }}"
   kubernetes.core.k8s:
     context: kind-kind
     state: present
@@ -53,5 +53,5 @@
         git:
           branch: main
           directory: /
-          repo: "https://172.18.0.200:3000/nephio/{{ item.name }}.git"
+          repo: "http://172.18.0.200:3000/nephio/{{ item.name }}.git"
         type: git   
