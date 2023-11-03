@@ -18,7 +18,7 @@
         name: "{{ item.name }}"
         namespace: default
       spec:
-        description: "{{ item.name }} repository"
+        description: "Clone of GitHub repository {{ item.name }}"
         defaultBranch: main
 
 - name: "Pull GitHub repo {{ item.name }}"
