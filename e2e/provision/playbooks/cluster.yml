@@ -16,22 +16,16 @@
       version: 0.42.0
       download_url: "https://github.com/srl-labs/containerlab/releases/download"
 
-    # pass HTTP proxy parameters to the Docker daemon
-    docker_engine_init_exports:
-      http_proxy:  "{{ lookup('ansible.builtin.env', 'http_proxy') }}"
-      HTTP_PROXY:  "{{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}"
-      https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') }}"
-      HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}"
-      no_proxy:    "{{ lookup('ansible.builtin.env', 'no_proxy') }}"
-      NO_PROXY:    "{{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
   pre_tasks:
     - name: "Print environment variable-based configuration"
       become: true
       ansible.builtin.debug:
         msg: 
-          - "http proxy env: {{ lookup('ansible.builtin.env', 'http_proxy') }}, {{ lookup('ansible.builtin.env', 'https_proxy') }}, {{ lookup('ansible.builtin.env', 'no_proxy') }}"
-          - "HTTP PROXY env: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}, {{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
-          - "docker registry mirrors: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
+          - "http_proxy: {{ lookup('ansible.builtin.env', 'http_proxy') }}, https_proxy: {{ lookup('ansible.builtin.env', 'https_proxy') }}"
+          - "no_proxy: {{ lookup('ansible.builtin.env', 'no_proxy') }}"
+          - "HTTP_PROXY: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, HTTPS_PROXY: {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}"
+          - "NO_PROXY: {{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
+          - "DOCKER_REGISTRY_MIRRORS: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
 
     - name: Install kubernetes python package
       become: true
@@ -46,6 +40,16 @@
             docker_engine_daemon_json:
               registry-mirrors: "{{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
           when: lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS')
+
+        - name: Pass HTTP proxy parameters to the Docker daemon
+          ansible.builtin.set_fact:
+            docker_engine_init_exports:
+              http_proxy:  "{{ lookup('ansible.builtin.env', 'http_proxy') | default(omit) }}"
+              HTTP_PROXY:  "{{ lookup('ansible.builtin.env', 'HTTP_PROXY') | default(omit) }}"
+              https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
+              HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'HTTPS_PROXY') | default(omit) }}"
+              no_proxy:    "{{ lookup('ansible.builtin.env', 'no_proxy') | default(omit) }}"
+              NO_PROXY:    "{{ lookup('ansible.builtin.env', 'NO_PROXY') | default(omit) }}"
 
         - name: Install docker binaries
           ansible.builtin.include_role:
