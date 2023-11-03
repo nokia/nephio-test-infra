@@ -50,9 +50,9 @@ echo "Downloading and starting the init script..."
 
 curl https://raw.githubusercontent.com/nokia/nephio-test-infra/nokia-intranet/e2e/provision/init.sh |  \
 sudo \
-  NEPHIO_DEBUG="${NEPHIO_DEBUG:-false}" \
-  NEPHIO_USER="${NEPHIO_USER:-${USER:-ubuntu}}" \
-  NEPHIO_REPO="https://github.com/nokia/nephio-test-infra.git" \
-  NEPHIO_BRANCH="nokia-intranet" \
-  DOCKER_REGISTRY_MIRRORS='["https://docker-registry-remote.artifactory-espoo1.int.net.nokia.com","https://docker-registry-remote.artifactory-espoo2.int.net.nokia.com"]' \
-  bash
+    NEPHIO_DEBUG="${NEPHIO_DEBUG:-false}" \
+    NEPHIO_USER="${NEPHIO_USER:-${USER:-ubuntu}}" \
+    NEPHIO_REPO="https://github.com/nokia/nephio-test-infra.git" \
+    NEPHIO_BRANCH="nokia-intranet" \
+    DOCKER_REGISTRY_MIRRORS='["https://docker-registry-remote.artifactory-espoo1.int.net.nokia.com","https://docker-registry-remote.artifactory-espoo2.int.net.nokia.com"]' \
+    bash
