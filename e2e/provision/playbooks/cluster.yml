@@ -15,6 +15,13 @@
     clab:
       version: 0.42.0
       download_url: "https://github.com/srl-labs/containerlab/releases/download"
+  environment:
+    http_proxy: "{{ lookup('ansible.builtin.env', 'http_proxy') | default(omit) }}"
+    HTTP_PROXY: "{{ lookup('ansible.builtin.env', 'HTTP_PROXY') | default(omit) }}"
+    https_proxy: "{{ lookup('ansible.builtin.env', 'https_proxy') | default(omit) }}"
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'HTTPS_PROXY') | default(omit) }}"
+    no_proxy: "{{ lookup('ansible.builtin.env', 'no_proxy') | default(omit) }}"
+    NO_PROXY: "{{ lookup('ansible.builtin.env', 'NO_PROXY') | default(omit) }}"
 
   pre_tasks:
     - name: "Print environment variable-based configuration"

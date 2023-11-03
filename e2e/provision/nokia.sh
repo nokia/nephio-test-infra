@@ -13,9 +13,9 @@ sudo chmod go-rwx /etc/sudoers.d/nephio
 
 
 
-# replace proxy envvars in /etc/environment  (required, because ansible uses /bin/sh and not bash)
-if [ -f /etc/environment ]; then
-    sudo sed --in-place '/_proxy=/I d' /etc/environment
+# replace proxy envvars in .bashrc
+if [ -f "$HOME/.bashrc" ]; then
+    sudo sed --in-place '/export .*_proxy=/I d' "$HOME/.bashrc"
 fi
 
 # sensible defaults for *_proxy
@@ -25,10 +25,10 @@ if [ -n "$http_proxy" -o -n "$https_proxy" ]; then
     export no_proxy="${no_proxy:-127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254}"
 
     # replace proxy envvars in /etc/environment
-    cat << THEEND | sudo tee -a  /etc/environment > /dev/null
-http_proxy="$http_proxy"
-https_proxy="$https_proxy"
-no_proxy="$no_proxy"
+    cat << THEEND  >> "$HOME/.bashrc"
+export http_proxy="$http_proxy"
+export https_proxy="$https_proxy"
+export no_proxy="$no_proxy"
 THEEND
 fi
 
@@ -39,10 +39,10 @@ if [ -n "$HTTP_PROXY" -o -n "$HTTPS_PROXY" ]; then
     export NO_PROXY="${NO_PROXY:-127.0.0.1,localhost,.cluster,.local,.svc,.novalocal,.nsn-net.net,.nsn-rdnet.net,.nokia.net,.xip.io,169.254.169.254}"
 
     # replace proxy envvars in /etc/environment
-    cat << THEEND2 | sudo tee -a  /etc/environment > /dev/null
-HTTP_PROXY="$HTTP_PROXY"
-HTTPS_PROXY="$HTTPS_PROXY"
-NO_PROXY="$NO_PROXY"
+    cat << THEEND2 >> "$HOME/.bashrc"
+export HTTP_PROXY="$HTTP_PROXY"
+export HTTPS_PROXY="$HTTPS_PROXY"
+export NO_PROXY="$NO_PROXY"
 THEEND2
 fi
 
