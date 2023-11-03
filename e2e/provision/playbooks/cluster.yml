@@ -21,11 +21,13 @@
       become: true
       ansible.builtin.debug:
         msg:
-          - "http_proxy: {{ lookup('ansible.builtin.env', 'http_proxy') }}, https_proxy: {{ lookup('ansible.builtin.env', 'https_proxy') }}"
-          - "no_proxy: {{ lookup('ansible.builtin.env', 'no_proxy') }}"
+          - "DOCKERHUB_USERNAME: {{ lookup('ansible.builtin.env', 'DOCKERHUB_USERNAME') }}"
+          - "DOCKERHUB_TOKEN: {{ lookup('ansible.builtin.env', 'DOCKERHUB_TOKEN') }}"
+          - "DOCKER_REGISTRY_MIRRORS: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
           - "HTTP_PROXY: {{ lookup('ansible.builtin.env', 'HTTP_PROXY') }}, HTTPS_PROXY: {{ lookup('ansible.builtin.env', 'HTTPS_PROXY') }}"
           - "NO_PROXY: {{ lookup('ansible.builtin.env', 'NO_PROXY') }}"
-          - "DOCKER_REGISTRY_MIRRORS: {{ lookup('ansible.builtin.env', 'DOCKER_REGISTRY_MIRRORS') }}"
+          - "http_proxy: {{ lookup('ansible.builtin.env', 'http_proxy') }}, https_proxy: {{ lookup('ansible.builtin.env', 'https_proxy') }}"
+          - "no_proxy: {{ lookup('ansible.builtin.env', 'no_proxy') }}"
 
     - name: Install kubernetes python package
       become: true
