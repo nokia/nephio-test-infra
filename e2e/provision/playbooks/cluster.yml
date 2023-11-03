@@ -113,28 +113,18 @@
     - bootstrap
     - install
   tasks:
-
-    # Git cloning is deliberately done directly on the localhost instead of a pod running in a management cluster.
-    # This way we only need to assume that the localhost can reach the Internet (i.e. http proxy vars are setup correctly),
-    # but we don't have to assume that workloads running in the clusters can also reach the internet
-    - name: Clone GitHub repositories to gitea
-      ansible.builtin.include_tasks: mirror_git_repo_to_gitea.yaml
-      loop:
-        - {name: nephio-example-packages, repo_uri: https://github.com/nephio-project/nephio-example-packages.git }
-        - {name: free5gc-packages, repo_uri: https://github.com/nephio-project/free5gc-packages.git }
-
     - name: Deploy repositories
       ansible.builtin.include_role:
         name: kpt
       loop:
-        - {pkg: repository, version: v1.0.1, dest: /tmp/repository/mgmt}
-        - {pkg: rootsync, version: v1.0.1, dest: /tmp/rootsync/mgmt}
-        - {pkg: repository, version: v1.0.1, dest: /tmp/repository/mgmt-staging}
+        - {pkg: repository, dest: /tmp/repository/mgmt}
+        - {pkg: rootsync, dest: /tmp/rootsync/mgmt}
+        - {pkg: repository, dest: /tmp/repository/mgmt-staging}
       vars:
-        repo_uri: https://github.com/nephio-project/nephio-example-packages
+        repo_uri: "{{ nephio_example_repo_uri }}"
         local_dest_directory: "{{ item.dest }}"
         pkg: "{{ item.pkg }}"
-        version: "{{ item.version }}"
+        version: "{{ nephio_pkg_version }}"
         for_deployment: true
         context: kind-kind
         kpt_async: 900
@@ -162,7 +152,5 @@
           type: Ready
           status: true
       loop:
-        - nephio-example-packages
-        - free5gc-packages
         - mgmt
         - mgmt-staging
