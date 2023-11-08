@@ -42,34 +42,6 @@
   vars:
     context: "{{ k8s.context }}"
 
-- name: Create gitea user password in nephio-system namespace
-  kubernetes.core.k8s:
-    context: "{{ k8s.context }}"
-    state: present
-    definition:
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: git-user-secret
-        namespace: nephio-system
-      type: kubernetes.io/basic-auth
-      stringData:
-        username: "{{ gitea.k8s.username }}"
-        password: "{{ gitea.k8s.password }}"
-  no_log: true
-
-- name: Query the external gitea IP address
-  ansible.builtin.command: kubectl get services -n gitea gitea -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-  register: gitea_ip_result
-  until: "gitea_ip_result is succeeded"
-  retries: 10
-  delay: 10
-  changed_when: "gitea_ip_result is succeeded"
-
-- name: "Set the gitea external IP address"
-  ansible.builtin.set_fact:
-    gitea_ip: "{{ gitea_ip_result.stdout }}"
-
 - name: Deploy Nephio webui
   ansible.builtin.include_role:
     name: kpt

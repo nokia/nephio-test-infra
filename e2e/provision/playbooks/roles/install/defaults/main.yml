@@ -11,11 +11,6 @@
 k8s:
   context: kind-kind
 
-gitea:
-  k8s:
-    username: nephio
-    password: secret
-
 nephio_pkg_version: v1.0.1
 nephio_example_repo_uri: https://github.com/nephio-project/nephio-example-packages.git
 
